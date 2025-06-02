@@ -149,12 +149,12 @@ int main(int argc, char const *argv[]){
         }
     }
 
-    // Wait for all threads to finish
+    //Wait for all threads to finish
     for (int i = 0; i < total_threads; i++){
         pthread_join(threads[i], NULL);
     }
 
-    // Record the end time and calculate total execution time
+    //Record the end time and calculate total execution time
     clock_gettime(CLOCK_MONOTONIC, &global_end_time);
     total_execution_time_sec = (global_end_time.tv_sec - global_start_time.tv_sec) +
     (global_end_time.tv_nsec - global_start_time.tv_nsec) / 1e9;

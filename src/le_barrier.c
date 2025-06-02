@@ -6,15 +6,15 @@
 #include <pthread.h>
 #include <time.h>
 
-// This program implements a solution to the readers-writers problem using barriers.
-// In this program, the writers are prioritized over the readers.
+//This program implements a solution to the readers-writers problem using barriers.
+//In this program, the writers are prioritized over the readers.
 
-// The program uses a barrier to synchronize the start of all threads, and mutexes and condition variables to manage access to shared resources.
+//The program uses a barrier to synchronize the start of all threads, and mutexes and condition variables to manage access to shared resources.
 pthread_barrier_t t_barrier;
 pthread_mutex_t t_mutex;
 pthread_cond_t cond;
 
-// Global variables to track execution time and completed operations
+//Global variables to track execution time and completed operations
 struct timespec global_start_time, global_end_time;
 double total_execution_time_sec;
 
@@ -86,7 +86,7 @@ void* writer_func(void* arg){
 
 int main(int argc, char const *argv[]){
 
-    // Initialize the global start time for execution time measurement
+    //Initialize the global start time for execution time measurement
     clock_gettime(CLOCK_MONOTONIC, &global_start_time);
 
     // Check command line arguments for number of readers and writers
@@ -95,7 +95,7 @@ int main(int argc, char const *argv[]){
         return EXIT_FAILURE;
     }
 
-    // Parse the number of readers and writers from command line arguments
+    //Parse the number of readers and writers from command line arguments
     int num_readers = atoi(argv[1]);
     int num_writers = atoi(argv[2]);
     if (num_readers <= 0 || num_writers <= 0) {
@@ -103,7 +103,7 @@ int main(int argc, char const *argv[]){
         return EXIT_FAILURE;
     }
     
-    // Initialize sinchronization primitives
+    //Initialize sinchronization primitives
     int total_threads = num_readers + num_writers;
     if (pthread_barrier_init(&t_barrier, NULL, total_threads) != 0) {
         fprintf(stderr, "Failed to initialize barrier.\n");
@@ -121,7 +121,7 @@ int main(int argc, char const *argv[]){
         return EXIT_FAILURE;
     }
 
-    // Allocate memory for thread identifiers
+    //Allocate memory for thread identifiers
     pthread_t *threads;
     threads = malloc(total_threads * sizeof(pthread_t));
     if (threads == NULL) {
@@ -130,21 +130,21 @@ int main(int argc, char const *argv[]){
         return EXIT_FAILURE;
     }
 
-    // Seed the random number generator
+    //Seed the random number generator
     srand(time(NULL));
 
-    // Initialize global variables
+    //Initialize global variables
     writing = 0;
     writer_count = 0;
     reader_count = 0;
     t_reads_completed = 0;
     t_writes_completed = 0;
 
-    // Variables to track the number of current readers and writers
+    //Variables to track the number of current readers and writers
     int current_writers = 0;
     int current_readers = 0;
 
-    // Create threads for readers and writers randomly
+    //Create threads for readers and writers randomly
     for (int i = 0; i < total_threads; i++){
         int *arg = malloc(sizeof(int));
         if (arg == NULL){
@@ -171,17 +171,17 @@ int main(int argc, char const *argv[]){
         }
     }
 
-    // Wait for all threads to finish
+    //Wait for all threads to finish
     for (int i = 0; i < total_threads; i++){
         pthread_join(threads[i], NULL);
     }
 
-    // Record the end time and calculate total execution time
+    //Record the end time and calculate total execution time
     clock_gettime(CLOCK_MONOTONIC, &global_end_time);
     total_execution_time_sec = (global_end_time.tv_sec - global_start_time.tv_sec) +
     (global_end_time.tv_nsec - global_start_time.tv_nsec) / 1e9;
     
-    // Clean up resources
+    //Clean up resources
     free(threads);
     pthread_mutex_destroy(&t_mutex);
     pthread_cond_destroy(&cond);

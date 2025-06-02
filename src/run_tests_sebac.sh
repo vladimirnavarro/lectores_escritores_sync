@@ -5,9 +5,9 @@ OUTPUT_DIR="mediciones_simplificadas"
 SUMMARY_FILE="$OUTPUT_DIR/summary_metrics.csv"
 
 EXECUTABLES=(
-    "le_barrier"       # Writer priority with barrier synchronization
-    "le_busy"          # No priority, busy waiting
-    "le_mutex"         # Reader priority with mutex and condition variables
+    "le_barrier"       #Writer priority with barrier synchronization
+    "le_busy_wait"          #No priority, busy waiting
+    "le_mutex_cond"         #Reader priority with mutex and condition variables
 )
 
 #Environment setup
@@ -28,11 +28,12 @@ run_test_case() {
     
     #Execute the program with the specified number of readers and writers using perf stat
     PROGRAM_FULL_OUTPUT=$(sudo perf stat -e 'cpu-cycles,task-clock' \
-                          "./$exec_name" "$r" "$w" 2>&1)
+                          "../bin/$exec_name" "$r" "$w" 2>&1)
+
 
     #Parse the output to extract metrics
     program_exec_time=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Total execution time:" | awk '{print $4}')
-    total_reads=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Readers finished:" | awk '{print $3}')
+    total_reads=$(echo  "$PROGRAM_FULL_OUTPUT" | grep "Readers finished:" | awk '{print $3}')
     total_writes=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Writers finished:" | awk '{print $3}')
     reader_throughput=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Readers Throughput:" | awk '{print $3}')
     writer_throughput=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Writers Throughput:" | awk '{print $3}')
@@ -49,16 +50,16 @@ run_test_case() {
 for exec_name in "${EXECUTABLES[@]}"; do
     echo "--- Iniciando pruebas para: $exec_name ---"
 
-    # Scenario 1: Same number of readers and writers
-    # A representative combination is chosen, for example, 8 readers and 8 writers.
+    #Scenario 1: Same number of readers and writers
+    #A representative combination is chosen, for example, 8 readers and 8 writers.
     run_test_case "$exec_name" "R_eq_W" 8 8
 
-    # Scenario 2: More writers than readers
-    # Eligiendo una combinación representativa, por ejemplo, 4 lectores y 16 escritores.
+    #Scenario 2: More writers than readers
+    #Eligiendo una combinación representativa, por ejemplo, 4 lectores y 16 escritores.
     run_test_case "$exec_name" "W_gt_R" 4 16
 
-    # Scenario 3: More readers than writers
-    # Eligiendo una combinación representativa, por ejemplo, 16 lectores y 4 escritores.
+    #Scenario 3: More readers than writers
+    #Eligiendo una combinación representativa, por ejemplo, 16 lectores y 4 escritores.
     run_test_case "$exec_name" "R_gt_W" 16 4
 
 done

@@ -6,14 +6,14 @@
 #include<pthread.h>
 #include<time.h>
 
-// This program implements a solution to the readers-writers problem using mutexes and condition variables.
-// In this program, the readers are prioritized over the writers.
+//This program implements a solution to the readers-writers problem using mutexes and condition variables.
+//In this program, the readers are prioritized over the writers.
 
-// The program uses a mutex to manage access to shared resources and condition variables to signal when readers or writers can proceed.
+//The program uses a mutex to manage access to shared resources and condition variables to signal when readers or writers can proceed.
 pthread_mutex_t t_mutex;
 pthread_cond_t cond;
 
-// Global variables to track execution time and completed operations
+//Global variables to track execution time and completed operations
 struct timespec global_start_time, global_end_time;
 double total_execution_time_sec;
 
@@ -23,7 +23,7 @@ int t_reads_completed;
 int t_writes_completed;
 int finished;
 
-// Reader and writer functions
+//Reader and writer functions
 void* reader_func(void* arg){
     int reader_id = *((int*)arg);
     free(arg);
@@ -175,23 +175,23 @@ int main(int argc, char const *argv[]){
         }
     }
 
-    // Set the finished flag to indicate that threads can start processing
+    //Set the finished flag to indicate that threads can start processing
     finished = 1;
 
-    // Signal all threads to start processing
+    //Signal all threads to start processing
     pthread_cond_broadcast(&cond);
     
-    // Wait for all threads to finish
+    //Wait for all threads to finish
     for (int i = 0; i < total_threads; i++){
         pthread_join(threads[i], NULL);
     }
 
-    // Record the end time and calculate total execution time
+    //Record the end time and calculate total execution time
     clock_gettime(CLOCK_MONOTONIC, &global_end_time);
     total_execution_time_sec = (global_end_time.tv_sec - global_start_time.tv_sec) + 
                                 (global_end_time.tv_nsec - global_start_time.tv_nsec) / 1e9;
     
-    // Clean up resources
+    //Clean up resources
     finished = 0;
     pthread_mutex_destroy(&t_mutex);
     pthread_cond_destroy(&cond);
