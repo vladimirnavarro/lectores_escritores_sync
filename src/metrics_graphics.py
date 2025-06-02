@@ -2,24 +2,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# Leer el archivo CSV
-df = pd.read_csv("summary_metrics.csv")  # Ajusta ruta si es necesario
+#Read the CSV file containing the summary metrics
+df = pd.read_csv("./output/summary_metrics.csv")
 
-# Preprocesamiento de columnas con texto
+#Convert the columns to numeric types, handling errors and removing units
 df["perf_cpu_cycles"] = pd.to_numeric(df["perf_cpu_cycles"].str.split().str[0], errors='coerce')
 df["perf_task_clock_ms"] = pd.to_numeric(df["perf_task_clock_ms"].str.split().str[0], errors='coerce')
 df["program_exec_time_sec"] = pd.to_numeric(df["program_exec_time_sec"], errors='coerce')
 df["total_throughput_ops_sec"] = pd.to_numeric(df["total_throughput_ops_sec"], errors='coerce')
 
-# Estándar: convertir columnas clave a texto si no lo son
+#Convert 'implementation' and 'scenario' columns to string and create a combo column
 df["implementation"] = df["implementation"].astype(str)
 df["scenario"] = df["scenario"].astype(str)
 df["combo"] = df["implementation"] + " - " + df["scenario"]
 
-# Estilo general
+#Set the style for seaborn plots
 sns.set(style="whitegrid")
 
-# Lista de métricas que queremos graficar
+#Metrics to plot
 metricas = [
     {
         "columna": "program_exec_time_sec",
@@ -43,10 +43,10 @@ metricas = [
     }
 ]
 
-# Obtener implementaciones únicas
+#Get unique implementations for subplots
 implementaciones = df["implementation"].unique()
 
-# Generar subgráficas para cada métrica
+#Create bar plots for each metric
 for metrica in metricas:
     fig, axes = plt.subplots(1, len(implementaciones), figsize=(18, 5))
     

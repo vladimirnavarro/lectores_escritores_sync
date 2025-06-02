@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #Configuration for running tests on different implementations of the readers-writers problem
-OUTPUT_DIR="mediciones_simplificadas"
+OUTPUT_DIR="output"
 SUMMARY_FILE="$OUTPUT_DIR/summary_metrics.csv"
 
 EXECUTABLES=(
@@ -52,15 +52,15 @@ for exec_name in "${EXECUTABLES[@]}"; do
 
     #Scenario 1: Same number of readers and writers
     #A representative combination is chosen, for example, 8 readers and 8 writers.
-    run_test_case "$exec_name" "R_eq_W" 8 8
+    run_test_case "$exec_name" "R_eq_W" 30 30
 
     #Scenario 2: More writers than readers
-    #Eligiendo una combinación representativa, por ejemplo, 4 lectores y 16 escritores.
-    run_test_case "$exec_name" "W_gt_R" 4 16
+    #A representative combination is chosen, for example, 4 readers and 16 writers.
+    run_test_case "$exec_name" "W_gt_R" 30 50
 
     #Scenario 3: More readers than writers
-    #Eligiendo una combinación representativa, por ejemplo, 16 lectores y 4 escritores.
-    run_test_case "$exec_name" "R_gt_W" 16 4
+    #A representative combination is chosen, for example, 16 readers and 4 writers.
+    run_test_case "$exec_name" "R_gt_W" 50 30
 
 done
 
