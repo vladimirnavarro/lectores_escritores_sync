@@ -14,7 +14,7 @@ EXECUTABLES=(
 rm -rf "$OUTPUT_DIR"
 mkdir -p "$OUTPUT_DIR"
 
-echo "implementation,scenario,readers,writers,program_exec_time_sec,total_reads,total_writes,reader_throughput_ops_sec,writer_throughput_ops_sec,total_throughput_ops_sec,perf_cpu_cycles,perf_task_clock_ms" > "$SUMMARY_FILE"
+echo "implementation,scenario,readers,writers,program_exec_time_sec,reader_throughput_ops_sec,writer_throughput_ops_sec,total_throughput_ops_sec,perf_cpu_cycles,perf_task_clock_ms" > "$SUMMARY_FILE"
 
 #Function to run a test case with the given parameters
 #run_test_case(executable name, scenario name, number of readers, number of writers)
@@ -33,8 +33,6 @@ run_test_case() {
 
     #Parse the output to extract metrics
     program_exec_time=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Total execution time:" | awk '{print $4}')
-    total_reads=$(echo  "$PROGRAM_FULL_OUTPUT" | grep "Readers finished:" | awk '{print $3}')
-    total_writes=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Writers finished:" | awk '{print $3}')
     reader_throughput=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Readers Throughput:" | awk '{print $3}')
     writer_throughput=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Writers Throughput:" | awk '{print $3}')
     total_throughput=$(echo "$PROGRAM_FULL_OUTPUT" | grep "Total Throughput:" | awk '{print $3}')
@@ -44,22 +42,22 @@ run_test_case() {
     perf_task_clock_ms=$(echo "$PROGRAM_FULL_OUTPUT" | grep "task-clock" | awk -F',' '{print $1}')
 
     #Save the results in the csv summary file
-    echo "$exec_name,$scenario_name,$r,$w,$program_exec_time,$total_reads,$total_writes,$reader_throughput,$writer_throughput,$total_throughput,$perf_cpu_cycles,$perf_task_clock_ms" >> "$SUMMARY_FILE"
+    echo "$exec_name,$scenario_name,$r,$w,$program_exec_time,$reader_throughput,$writer_throughput,$total_throughput,$perf_cpu_cycles,$perf_task_clock_ms" >> "$SUMMARY_FILE"
 }
 
 for exec_name in "${EXECUTABLES[@]}"; do
     echo "--- Iniciando pruebas para: $exec_name ---"
 
     #Scenario 1: Same number of readers and writers
-    #A representative combination is chosen, for example, 8 readers and 8 writers.
+    #A representative combination is chosen, for example, 30 readers and 30 writers.
     run_test_case "$exec_name" "R_eq_W" 30 30
 
     #Scenario 2: More writers than readers
-    #A representative combination is chosen, for example, 4 readers and 16 writers.
+    #A representative combination is chosen, for example, 30 readers and 50 writers.
     run_test_case "$exec_name" "W_gt_R" 30 50
 
     #Scenario 3: More readers than writers
-    #A representative combination is chosen, for example, 16 readers and 4 writers.
+    #A representative combination is chosen, for example, 50 readers and 30 writers.
     run_test_case "$exec_name" "R_gt_W" 50 30
 
 done
