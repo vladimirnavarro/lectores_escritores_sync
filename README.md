@@ -99,8 +99,8 @@ Si deseas modificar el número de hilos lectores y escritores o añadir nuevos e
 
 ```bash
 run_test_case "nombre_del_ejecutable" "nombre_del_escenario" "numero_lectores" "numero_escritores"
+```
 
 ### Realizado por:
 Vladimir Antonio Navarro Tejeda
 Sebastián David Castro Arrieta
-```
