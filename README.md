@@ -102,5 +102,5 @@ run_test_case "nombre_del_ejecutable" "nombre_del_escenario" "numero_lectores" "
 ```
 
 ### Realizado por:
-Vladimir Antonio Navarro Tejeda
-Sebastián David Castro Arrieta
+* Vladimir Antonio Navarro Tejeda  
+* Sebastián David Castro Arrieta
