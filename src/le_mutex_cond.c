@@ -170,7 +170,7 @@ int main(int argc, char const *argv[]){
             current_writers++;
         } else {
             free(arg);
-            fprintf(stderr, "Error lógico: No se pudo crear un hilo.\n");
+            fprintf(stderr, "No more readers or writers can be created.\n");
             i--;
         }
     }
