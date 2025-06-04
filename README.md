@@ -22,8 +22,8 @@ Este taller implementa y compara el rendimiento de tres soluciones distintas al 
 * **Espera Activa (Busy-Waiting):**
     En esta implementación, los hilos que no pueden acceder al recurso en un momento dado entran en un bucle continuo de "espera activa", revisando repetidamente la condición de disponibilidad del recurso. Este método consume ciclos de CPU de forma ineficiente mientras el hilo espera, ya que no cede el control del procesador.
 
-* **Barreras (Prioridad a Escritores):**
-    Esta solución incorpora el uso de `barreras` para la sincronización de fases entre los hilos, y prioriza el acceso de los escritores. Los hilos esperan en una barrera inicial para comenzar juntos y se utilizan mecanismos adicionales para asegurar que los escritores tengan preferencia en el acceso al recurso compartido.
+* **Semaforos (Prioridad a Escritores):**
+    Esta solución utiliza semáforos para controlar el acceso al recurso compartido. Los semáforos permiten que múltiples lectores accedan simultáneamente, pero garantizan que solo un escritor pueda acceder al recurso a la vez, priorizando así el acceso de los escritores cuando están presentes.
 
 ## 3. Métricas de Evaluación
 
@@ -45,7 +45,7 @@ Para compilar y ejecutar las pruebas, necesitarás:
 * **Sistema Operativo:** Un entorno Linux compatible (preferiblemente **WSL con Ubuntu**).
 * **Compilador:** **GCC** (GNU Compiler Collection) con soporte para Pthreads (`-pthread`).
 * **Herramienta de Construcción:** **`make`**.
-* **Herramienta de Rendimiento:** **`perf`** (parte del kernel de Linux, usualmente instalable con `sudo apt install linux-tools-common linux-tools-`uname -r``).
+* **Herramienta de Rendimiento:** **`perf`** para la recolección de métricas de rendimiento.
 
 ## 5. Estructura del Proyecto
 
@@ -53,7 +53,7 @@ El repositorio está organizado de la siguiente manera:
 
 .
 ├── src/
-│   ├── le_barrier.c         
+│   ├── le_semaphore.c         
 │   ├── le_busy_wait.c       
 │   └── le_mutex_cond.c      
 ├── bin/                     
@@ -72,7 +72,7 @@ Sigue estos pasos para compilar los programas y ejecutar las pruebas en tu entor
     ```
 
 2.  **Compilar los Programas:**
-    Simplemente ejecuta `make` en la raíz del repositorio. El `Makefile` se encargará de compilar los programas (`le_barrier`, `le_busy_wait`, `le_mutex_cond`) y colocarlos en la carpeta `bin/`.
+    Simplemente ejecuta `make` en la raíz del repositorio. El `Makefile` se encargará de compilar los programas (`le_mutex_cond`, `le_busy_wait`, `le_semaphore`) y colocarlos en la carpeta `bin/`.
     ```bash
     make
     ```
@@ -91,7 +91,7 @@ Sigue estos pasos para compilar los programas y ejecutar las pruebas en tu entor
     El script ejecutará automáticamente las tres soluciones en los escenarios de carga predefinidos (misma cantidad de R/W, más R que W, más W que R), cada uno tres veces, y recolectará todas las métricas.
 
 5.  **Ver los Resultados:**
-    Los resultados consolidados de todas las ejecuciones se guardarán en un archivo CSV llamado `summary_metrics.csv` en el directorio raíz.
+    Los resultados de las pruebas se guardarán en un archivo csv llamado `summary_metrics.csv` donde el número al final representa la ronda de pruebas (1, 2 o 3). Puedes abrir este archivo con cualquier editor de texto o software de hojas de cálculo para analizar los resultados. 
 
 ### Personalización de Escenarios
 
